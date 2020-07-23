@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace PrologMobileApi.Models
 {
-    public class Organization
+    public class UserPhone 
     {
         public string Id { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
-        public string Name { get; set; }
+        public string UserId { get; set; }
+
+        public string IMEI { get; set; }
+
+        public bool Blacklist { get; set; }
     }
 }
