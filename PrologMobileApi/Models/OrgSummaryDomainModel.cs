@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PrologMobileApi.Models
 {
-    public class OrganizationSummaryDomainModel
+    public class OrgSummaryDomainModel
     {
         public string Id { get; set; }
         public string Name { get; set; }

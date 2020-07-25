@@ -17,26 +17,14 @@ namespace PrologMobileApi.Manager
 
         public async Task<List<OrganizationSummary>> GetOrganizationInfo()
         {
-            var resultList = new List<OrganizationSummary>();
-            var organizationList = await _organizationService.GetOrganizations();
+            var resultList = new List<OrganizationSummary>();            
             try
             {
+                var organizationList = await _organizationService.GetOrganizations();
                 foreach (var organization in organizationList)
-                {
-                    var userList = await _organizationService.GetUsersInfo(organization.Id);
-                    var userData = new List<UserDetail>();
-                    foreach (var user in userList)
-                    {
-                        var userPhoneInfo = await _organizationService.GetUserPhoneData(organization.Id, user.Id);
-                        userData.Add(
-                            new UserDetail
-                            {
-                                Id = user.Id,
-                                Email = user.Email,
-                                UserPhoneData = userPhoneInfo.Where(x => x.Blacklist).ToList()
-                            });
-
-                    }
+                {                   
+                    var userData = await GetUserDetails(organization.Id);
+                    
                     resultList.Add(
                         new OrganizationSummary
                         {
@@ -49,10 +37,31 @@ namespace PrologMobileApi.Manager
             }
             catch (Exception ex)
             {
-                var test = ex;
+                //add to logger
+                return null;
             }
 
             return resultList;
+        }
+
+        private async Task<List<UserDetail>> GetUserDetails(string id)
+        {
+            var userData = new List<UserDetail>();
+            var userList = await _organizationService.GetUsersInfo(id);
+            
+            foreach (var user in userList)
+            {
+                var userPhoneInfo = await _organizationService.GetUserPhoneData(id, user.Id);
+                userData.Add(
+                    new UserDetail
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        UserPhoneData = userPhoneInfo.Where(x => x.Blacklist).ToList()
+                    });
+
+            }
+            return userData;
         }
     }
 }

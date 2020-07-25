@@ -2,9 +2,7 @@
 using PrologMobileApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection.Emit;
 using System.Threading.Tasks;
 
 namespace PrologMobileApi.Services
@@ -16,34 +14,24 @@ namespace PrologMobileApi.Services
         {
             var response = await _httpClient.GetAsync("https://5f0ddbee704cdf0016eaea16.mockapi.io/organizations");
 
-            try
+            if (response.IsSuccessStatusCode)
             {
-                if (response.IsSuccessStatusCode)
-                {
-                    var jsonString = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<List<Organization>>(jsonString);
-                }
-                else
-                {
-                    throw new Exception("No info found!");
-                }
+                var jsonString = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Organization>>(jsonString);
             }
-            catch(Exception ex)
+            else
             {
-                var test = ex;
-                return null;
+                throw new Exception("No info found!");
             }
-            
-            
         }        
 
         public async Task<List<User>> GetUsersInfo(string id)
         {
             var url = string.Format("https://5f0ddbee704cdf0016eaea16.mockapi.io/organizations/{0}/users", id);
-            var result = await _httpClient.GetAsync(url);
-            if (result.IsSuccessStatusCode)
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
             {
-                var jsonString = await result.Content.ReadAsStringAsync();
+                var jsonString = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<List<User>>(jsonString);
             }
             else
@@ -55,10 +43,10 @@ namespace PrologMobileApi.Services
         public async Task<List<UserPhone>> GetUserPhoneData(string orgId, string userId)
         {
             var url = string.Format("https://5f0ddbee704cdf0016eaea16.mockapi.io/organizations/{0}/users/{1}/phones", orgId, userId);
-            var result = await _httpClient.GetAsync(url);
-            if (result.IsSuccessStatusCode)
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
             {
-                var jsonString = await result.Content.ReadAsStringAsync();
+                var jsonString = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<List<UserPhone>>(jsonString);
             }
             else

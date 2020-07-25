@@ -1,28 +1,35 @@
 ﻿using PrologMobileApi.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
 namespace PrologMobileApi.Mapper
 {
     public class OrganizationSummaryMapper
     {
-        public static List<OrganizationSummaryDomainModel> BuildMapper(List<OrganizationSummary> organizationSummaries)
+        public static List<OrgSummaryDomainModel> BuildMapper(List<OrganizationSummary> organizationSummaries)
         {
-            var domainModel = new List<OrganizationSummaryDomainModel>();
+            var domainModel = new List<OrgSummaryDomainModel>();
             foreach(var summary in organizationSummaries)
             {
-                domainModel.Add(new OrganizationSummaryDomainModel
+                domainModel.Add(new OrgSummaryDomainModel
                 {
                     Id = summary.Id,
                     Name = summary.Name,
                     BlackListTotal = summary.Users.Count(),
-                    TotalCount = summary.Users.Select(x => x.UserPhoneData.Count).FirstOrDefault(),
-                    Users = GetSummaryDetails(summary.Users)                    
-                });
+                    TotalCount = summary.Users != null ? GetTotalCount(summary.Users) : 0,
+                    Users = summary.Users != null ? GetSummaryDetails(summary.Users) : null
+                }); 
             }
             return domainModel;
+        }
+
+        private static int GetTotalCount(List<UserDetail> users)
+        {
+            var count = 0;
+            foreach (var user in users)
+            {
+                count += user.UserPhoneData.Count();
+            }
+            return count;
         }
 
         private static List<UserSummary> GetSummaryDetails(List<UserDetail> users)
@@ -34,7 +41,7 @@ namespace PrologMobileApi.Mapper
                 {
                     Id = user.Id,
                     Email = user.Email,
-                    PhoneCount = user.UserPhoneData.Count()
+                    PhoneCount = user.UserPhoneData != null ? user.UserPhoneData.Count() : 0
                 });
             }
             return userSummary;
