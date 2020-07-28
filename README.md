@@ -1,3 +1,9 @@
+# Checklist to update API
+- [ ] Add Authentication
+- [ ] Add urls in appsettings.json
+- [ ] Add Tests
+- [X] App Services, Manager and Mapper Class
+
 # Setup & Run
 
 https://localhost:44316/swagger/index.html
